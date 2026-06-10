@@ -376,19 +376,10 @@ background:var(--orange);width:0;z-index:60;transition:width .25s ease}
 </section>
 
 <section class="slide">
- <div class="hb"><div class="kick">LINHA DO TEMPO</div><div class="ttl">As 8 sessões — clique para ver como cada uma começou</div></div>
- <div class="body">
-  <div class="tlbar" id="tlbar"></div>
-  <div class="tlpanel" id="tlpanel">
-   <div class="tlhint">▲ Clique em uma sessão acima para ver os detalhes e o primeiro pedido verbatim.</div>
-  </div>
- </div>
- <div class="foot">Tamanho dos blocos proporcional ao volume de mensagens da sessão</div>
-</section>
-
-<section class="slide">
  <div class="hb"><div class="kick">COMO FUNCIONA</div><div class="ttl">A anatomia de uma interação</div></div>
  <div class="body">
+  <div class="why"><span class="wlbl">EXEMPLO REAL</span> Verificação da atualização dos microdados da RAIS no FTP oficial e orquestração do download/processamento em background.
+   <span class="src">sessão f261c368 · 08/jun</span></div>
   <div class="steps">
    <div class="step"><div class="sn">1</div>Você pede,<br>em português</div>
    <div class="arr">→</div>
@@ -401,7 +392,6 @@ background:var(--orange);width:0;z-index:60;transition:width .25s ease}
    <div class="term rev"><div class="tl"><span class="tt">Bash</span> <span class="tp">$</span> curl -s --max-time 60 -l "ftp://ftp.mtps.gov.br/pdet/microdados/" 2&gt;&amp;1 | head -50; echo "---EXIT: $?---"</div><div class="to">CAGED</div><div class="to">CAGED_AJUSTES</div><div class="to">COMUNICADO_microdados.pdf</div><div class="to">NOTA_TECNICA_microdados.pdf</div><div class="to">NOVO CAGED</div><div class="to">RAIS</div><div class="to">TRABALHO_DOMESTICO</div><div class="to tor">← output real que o Claude leu e analisou</div></div>
    <div class="row rc rev"><div class="bub bc md"><div class="who whoc">CLAUDE</div><span class="rsh"><p>Vou tentar acessar o FTP diretamente e também buscar informação na web.</p><p>O FTP está acessível. Vou checar o diretório RAIS e as datas dos arquivos para ver o que há de mais recente.</p><p>Sim — está sendo atualizado <b>muito recentemente</b>. Deixa eu confirmar o conteúdo das pastas mais novas (RAIS 2024/2025):</p></span><span class="rfull" hidden><p>Vou tentar acessar o FTP diretamente e também buscar informação na web.</p><p>O FTP está acessível. Vou checar o diretório RAIS e as datas dos arquivos para ver o que há de mais recente.</p><p>Sim — está sendo atualizado <b>muito recentemente</b>. Deixa eu confirmar o conteúdo das pastas mais novas (RAIS 2024/2025):</p><p>Sim, <b>o FTP está sendo atualizado ativamente e de forma muito recente</b>. Confirmei conectando direto no servidor (<code class="mdc">ftp://ftp.mtps.gov.br/pdet/microdados/</code>). As datas dos diretórios estão no formato <code class="mdc">MM-DD-YY</code>:</p><div class="mdh">RAIS — novidades importantes</div><table class="mdt"><thead><tr><th>Pasta</th><th>Última modificação</th><th>Observação</th></tr></thead><tbody><tr><td><b>RAIS/2025</b></td><td><b>13/05/2026</b></td><td>🔥 <b>Ano-base 2025 já publicado</b> (ESTAB + VINC por região, ~4 GB em .7z)</td></tr><tr><td><b>RAIS/2024</b></td><td><b>18/05/2026</b></td><td>Reprocessado recentemente (2º processamento, com administração pública)</td></tr><tr><td>RAIS/2023</td><td>18/05/2026</td><td>Também reprocessado (relevante para o seu holdout!)</td></tr><tr><td>RAIS/2019, 2020, 2017, 2013, etc.</td><td>17–24/04/2026</td><td>Várias pastas históricas tocadas em abril/2026</td></tr></tbody></table><div class="mdh">Novo CAGED</div><ul class="mdl"><li><b>NOVO CAGED/2026</b> atualizado em <b>28/05/2026</b>, com competências mensais até <b>202604 (abril/2026)</b>.</li></ul><div class="mdh">Pontos de atenção para o seu projeto</div><ul class="mdl"><li><b>RAIS 2024 e 2025 agora existem</b> — antes seu pipeline ia só até 2023. Há material novo para estender treino e, principalmente, montar um <b>novo holdout out-of-time mais recente</b> (2024/2025).</li><li>⚠️ <b>A RAIS 2023 foi re-publicada em 18/05/2026</b> — pode diferir da versão que você usou em <code class="mdc">data/interim/rais/ano=2023</code>. Vale verificar se os dados mudaram antes de comparar resultados.</li><li>⚠️ <b>Cuidado com a mudança de formato de códigos</b> (a correção crítica do <code class="mdc">CLAUDE.md</code> §3, <code class="mdc">normalize_short_codes</code>): como 2024/2025 são layouts ainda mais novos, é provável que precisem de validação/ajuste adicional do mesmo tipo antes de entrar no pipeline.</li><li>Acesso é por <b>FTP puro</b> (navegadores modernos não suportam mais) — use <code class="mdc">curl</code>/cliente FTP, como fizemos aqui. Seu <code class="mdc">runpod/sync_interim.py</code> baixa de FTP? Se sim, ele funciona.</li></ul><p>Quer que eu liste o conteúdo completo de alguma pasta específica, ou que eu prepare um plano para incorporar RAIS 2024/2025 ao pipeline (limpeza + novo holdout)?</p><p>Fontes:</p><ul class="mdl"><li>[Comunicado - Microdados RAIS 2024 (gov.br)](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/comunicados/comunicado-microdados-rais-2024)</li><li>[Microdados RAIS e CAGED (MTE)](https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/estatisticas-trabalho/microdados-rais-e-caged)</li><li>[Microdados RAIS e CAGED — PDET](http://pdet.mte.gov.br/microdados-rais-e-caged)</li></ul></span><button class="more" onclick="expande(this)">ver resposta completa</button></div></div>
   </div>
-  <div class="why rev"><span class="wlbl">EXEMPLO REAL</span> Verificação da atualização dos microdados da RAIS no FTP oficial e orquestração do download/processamento em background.<span class="src">sessão f261c368 · 08/jun</span></div>
  </div>
  <div class="foot">O Claude não responde de memória: ele conecta no FTP, lista as datas e prova a resposta</div>
 </section>
@@ -628,6 +618,17 @@ A ideia central é calcular taxas históricas de desligamento por célula de per
   </div>
  </div>
  <div class="foot">Alerta espontâneo emitido na resposta sobre o FTP da RAIS</div>
+</section>
+
+<section class="slide">
+ <div class="hb"><div class="kick">LINHA DO TEMPO</div><div class="ttl">As 8 sessões — clique para ver como cada uma começou</div></div>
+ <div class="body">
+  <div class="tlbar" id="tlbar"></div>
+  <div class="tlpanel" id="tlpanel">
+   <div class="tlhint">▲ Clique em uma sessão acima para ver os detalhes e o primeiro pedido verbatim.</div>
+  </div>
+ </div>
+ <div class="foot">Tamanho dos blocos proporcional ao volume de mensagens da sessão</div>
 </section>
 
 <section class="slide">

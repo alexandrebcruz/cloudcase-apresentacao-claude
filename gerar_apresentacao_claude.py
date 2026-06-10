@@ -624,7 +624,7 @@ slides.append(f'''
 </section>'''.format(f'<div class="figin">{svg_heatmap()}</div>'
                      '<div class="figcap">Cada linha é um dia; cada célula, uma hora — quanto mais opaco o laranja, maior a atividade</div>'))
 
-# 4 — timeline interativa
+# timeline interativa (inserida mais adiante, após o "Bônus · Proatividade")
 sess_js = []
 for s in SESSOES:
     sess_js.append({
@@ -635,7 +635,7 @@ for s in SESSOES:
         "prompt": (s["primeiro_prompt"] or "")[:420],
         "pedidos": s.get("pedidos", []),
     })
-slides.append(f'''
+slide_timeline = f'''
 <section class="slide">
  {header("LINHA DO TEMPO", "As 8 sessões — clique para ver como cada uma começou")}
  <div class="body">
@@ -645,7 +645,7 @@ slides.append(f'''
   </div>
  </div>
  <div class="foot">Tamanho dos blocos proporcional ao volume de mensagens da sessão</div>
-</section>''')
+</section>'''
 
 # 5 — anatomia de um turno (usa o momento "ftp", com output real)
 ftp = MOMENTOS["ftp"]
@@ -662,6 +662,8 @@ slides.append(f'''
 <section class="slide">
  {header("COMO FUNCIONA", "A anatomia de uma interação")}
  <div class="body">
+  <div class="why"><span class="wlbl">EXEMPLO REAL</span> {e(ftp["valor"])}
+   <span class="src">sessão {ftp["sessao"]} · {fmt_data(ftp["data"])}</span></div>
   <div class="steps">
    <div class="step"><div class="sn">1</div>Você pede,<br>em português</div>
    <div class="arr">→</div>
@@ -674,8 +676,6 @@ slides.append(f'''
    {exec_term}
    {rev(chat_claude(ftp["resposta"], 380))}
   </div>
-  {rev(f'<div class="why"><span class="wlbl">EXEMPLO REAL</span> {e(ftp["valor"])}'
-       f'<span class="src">sessão {ftp["sessao"]} · {fmt_data(ftp["data"])}</span></div>')}
  </div>
  <div class="foot">O Claude não responde de memória: ele conecta no FTP, lista as datas e prova a resposta</div>
 </section>''')
@@ -738,6 +738,9 @@ slides.append(f'''
  </div>
  <div class="foot">Alerta espontâneo emitido na resposta sobre o FTP da RAIS</div>
 </section>''')
+
+# linha do tempo das sessões (reposicionada para depois do bônus)
+slides.append(slide_timeline)
 
 # 11c — a tabela final do consignado (cobertura de parcelas), extraída
 # verbatim do HTML da apresentação original (mesmo layout/cores)

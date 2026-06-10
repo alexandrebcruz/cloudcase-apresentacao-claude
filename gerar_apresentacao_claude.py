@@ -419,6 +419,8 @@ def slide_momento(num, total, m, kicker, fig_html, resp_ch=520):
 <section class="slide">
  {header(kicker, m["titulo"])}
  <div class="body">
+  <div class="why"><span class="wlbl">POR QUE ISSO IMPORTA</span> {e(m["valor"])}
+   <span class="src">sessão {m["sessao"]} · {fmt_data(m["data"])} · trecho verbatim do histórico</span></div>
   <div class="cols">
    <div class="colL">
     <div class="chatcol">
@@ -429,8 +431,6 @@ def slide_momento(num, total, m, kicker, fig_html, resp_ch=520):
    </div>
    <div class="colR">{fig_html}</div>
   </div>
-  {rev(f'<div class="why"><span class="wlbl">POR QUE ISSO IMPORTA</span> {e(m["valor"])}'
-       f'<span class="src">sessão {m["sessao"]} · {fmt_data(m["data"])} · trecho verbatim do histórico</span></div>')}
  </div>
  <div class="foot">Momento {num} de {total} · conversas reais extraídas das sessões do Claude Code</div>
 </section>'''
@@ -712,6 +712,9 @@ slides.append(f'''
 <section class="slide">
  {header("BÔNUS · PROATIVIDADE", "O aviso que evitou um problema")}
  <div class="body">
+  <div class="why"><span class="wlbl">POR QUE ISSO IMPORTA</span>
+   Um assistente que executa é útil; um que antecipa problemas muda o patamar da análise.
+   <span class="src">sessão {ftp["sessao"]} · {fmt_data(ftp["data"])} · trecho verbatim do histórico</span></div>
   <div class="cols">
    <div class="colL">
     <div class="chatcol">
@@ -727,11 +730,26 @@ slides.append(f'''
     </ul>
    </div>
   </div>
-  {rev(f'<div class="why"><span class="wlbl">POR QUE ISSO IMPORTA</span> '
-       f'Um assistente que executa é útil; um que antecipa problemas muda o patamar da análise.'
-       f'<span class="src">sessão {ftp["sessao"]} · {fmt_data(ftp["data"])} · trecho verbatim do histórico</span></div>')}
  </div>
  <div class="foot">Alerta espontâneo emitido na resposta sobre o FTP da RAIS</div>
+</section>''')
+
+# 11c — a tabela final do consignado (cobertura de parcelas)
+slides.append(f'''
+<section class="slide">
+ {header("RESULTADO FINAL", "A tabela que vai para a decisão de crédito")}
+ <div class="body">
+  <div class="why"><span class="wlbl">O QUE ELA DIZ</span>
+   Percentual esperado de parcelas pagas em folha, por <b>categoria de risco</b> (1–23)
+   e <b>prazo do contrato</b> (T = 6 a 60 meses): da categoria 1 em 6 meses (100%)
+   à categoria 23 em 60 meses (9%). É a ponte entre o modelo e a política de crédito —
+   quanto maior o risco e mais longo o contrato, menor a cobertura esperada.</div>
+  <div class="figbox figreal" style="flex:1">
+   <div class="figin"><div class="cropr"><img src="{img_b64("consignado_tabelas_mob_2023.png")}" alt=""></div></div>
+   <div class="figcap">Cobertura esperada de parcelas (% pagas em folha) — tabela final entregue no material do Consignado</div>
+  </div>
+ </div>
+ <div class="foot">Figura real do projeto (consignado_tabelas_mob_2023.png), gerada por script construído em conversa</div>
 </section>''')
 
 # 12 — o que não seria viável (bullets + SVG)
@@ -988,6 +1006,11 @@ margin-top:calc(var(--u)*0.55)}
 .figreal .figcap::before{content:'FIGURA REAL DO PROJETO · ';
 color:#b07b10;font-weight:700;letter-spacing:.05em;
 font-size:calc(var(--u)*0.7)}
+/* recorte do painel direito de uma figura larga */
+.cropr{position:relative;height:100%;aspect-ratio:0.97;max-width:100%;
+margin:0 auto;overflow:hidden;border-radius:6px}
+.cropr img{position:absolute;right:0;top:0;height:100%;width:auto;
+max-width:none}
 /* capa */
 .cover{background:var(--navy)}
 .cdec{position:absolute;right:3%;top:10%;bottom:10%;width:26%;opacity:.55;

@@ -784,9 +784,11 @@ for i, (nome, cod, destaque) in enumerate(_langs):
 slides.append(f'''
 <section class="slide">
  {header("REFLEXÃO", "Uma nova forma de interagir com a computação")}
- <div class="body" style="justify-content:center;gap:calc(var(--u)*1.5)">
-  <div class="elbl">COMO FALAMOS COM A MÁQUINA</div>
-  <div class="evo">{"".join(_ecards)}</div>
+ <div class="body" style="justify-content:space-evenly">
+  <div>
+   <div class="elbl">COMO FALAMOS COM A MÁQUINA</div>
+   <div class="evo">{"".join(_ecards)}</div>
+  </div>
   <div class="rev">
    <div class="elbl">E O QUE FALAMOS PARA ELA — A LINGUAGEM TAMBÉM SUBIU DE NÍVEL</div>
    <div class="evo">{"".join(_lchips)}</div>
@@ -856,9 +858,11 @@ def svg_energia():
 slides.append(f'''
 <section class="slide">
  {header("REFLEXÃO · PARTE 2", "Nada disso é de graça — os desafios")}
- <div class="body" style="justify-content:center;gap:calc(var(--u)*1.0)">
-  <div class="elbl">O OUTRO LADO DA MOEDA</div>
-  <div class="evo">{"".join(_dcards)}</div>
+ <div class="body" style="justify-content:space-evenly">
+  <div>
+   <div class="elbl">O OUTRO LADO DA MOEDA</div>
+   <div class="evo">{"".join(_dcards)}</div>
+  </div>
   <div class="rev">
    <div class="cols" style="flex:0 0 auto;align-items:stretch">
     <div class="colL">{figbox(svg_energia(),
@@ -1111,8 +1115,7 @@ line-height:calc(var(--u)*1.4)}
 /* evolução (slide reflexão) */
 .elbl{color:#b07b10;font-weight:700;letter-spacing:.1em;
 font-size:calc(var(--u)*0.85);margin-bottom:calc(var(--u)*0.5)}
-.evo{display:flex;align-items:stretch;gap:calc(var(--u)*0.5);
-margin-bottom:calc(var(--u)*1.0)}
+.evo{display:flex;align-items:stretch;gap:calc(var(--u)*0.5)}
 .evo .earr{align-self:center;color:var(--orange);
 font-size:calc(var(--u)*1.6);font-weight:700;flex-shrink:0}
 .ecard{flex:1;background:#f4f7fb;border:1px solid #dfe6f0;border-radius:10px;
@@ -1129,8 +1132,8 @@ font-weight:700;font-size:calc(var(--u)*0.72);
 padding:calc(var(--u)*0.12) calc(var(--u)*0.7)}
 .ecap{color:var(--gray);font-size:calc(var(--u)*0.82);line-height:1.35}
 .lchip{flex:1;background:#0d1626;border-radius:8px;min-width:0;
-padding:calc(var(--u)*0.6) calc(var(--u)*0.7);text-align:center;
-display:flex;flex-direction:column;gap:calc(var(--u)*0.25);
+padding:calc(var(--u)*1.1) calc(var(--u)*0.7);text-align:center;
+display:flex;flex-direction:column;gap:calc(var(--u)*0.4);
 justify-content:center}
 .lchip.ldest{background:var(--orange)}
 .lchip.ldest .lnm{color:var(--navy)}

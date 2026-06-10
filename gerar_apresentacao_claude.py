@@ -734,7 +734,18 @@ slides.append(f'''
  <div class="foot">Alerta espontâneo emitido na resposta sobre o FTP da RAIS</div>
 </section>''')
 
-# 11c — a tabela final do consignado (cobertura de parcelas)
+# 11c — a tabela final do consignado (cobertura de parcelas), extraída
+# verbatim do HTML da apresentação original (mesmo layout/cores)
+def tabela_cobertura():
+    src = ("/mnt/d/Projetos/Consignado/outputs/"
+           "apresentacao_risco_desligamento_mob.html")
+    h = open(src, encoding="utf-8").read()
+    i = h.find("Cobertura esperada de parcelas")
+    ini = h.find("<table", i)
+    fim = h.find("</table>", ini) + len("</table>")
+    return h[ini:fim]
+
+
 slides.append(f'''
 <section class="slide">
  {header("RESULTADO FINAL", "A tabela que vai para a decisão de crédito")}
@@ -744,12 +755,13 @@ slides.append(f'''
    e <b>prazo do contrato</b> (T = 6 a 60 meses): da categoria 1 em 6 meses (100%)
    à categoria 23 em 60 meses (9%). É a ponte entre o modelo e a política de crédito —
    quanto maior o risco e mais longo o contrato, menor a cobertura esperada.</div>
-  <div class="figbox figreal" style="flex:1">
-   <div class="figin"><div class="cropr"><img src="{img_b64("consignado_tabelas_mob_2023.png")}" alt=""></div></div>
-   <div class="figcap">Cobertura esperada de parcelas (% pagas em folha) — tabela final entregue no material do Consignado</div>
+  <div class="aptwrap">
+   <div class="apt-h">Cobertura esperada de parcelas (% pagas em folha) por prazo T</div>
+   {tabela_cobertura()}
+   <div class="apt-note">T = meses de vínculo (MOB) · &gt;12 extrapolado (Weibull) · verde = melhor cobertura</div>
   </div>
  </div>
- <div class="foot">Figura real do projeto (consignado_tabelas_mob_2023.png), gerada por script construído em conversa</div>
+ <div class="foot">Tabela real, extraída verbatim da apresentação da diretoria (apresentacao_risco_desligamento_mob.html) — mesmo layout e cores</div>
 </section>''')
 
 # 12 — o que não seria viável (bullets + SVG)
@@ -1006,11 +1018,18 @@ margin-top:calc(var(--u)*0.55)}
 .figreal .figcap::before{content:'FIGURA REAL DO PROJETO · ';
 color:#b07b10;font-weight:700;letter-spacing:.05em;
 font-size:calc(var(--u)*0.7)}
-/* recorte do painel direito de uma figura larga */
-.cropr{position:relative;height:100%;aspect-ratio:0.97;max-width:100%;
-margin:0 auto;overflow:hidden;border-radius:6px}
-.cropr img{position:absolute;right:0;top:0;height:100%;width:auto;
-max-width:none}
+/* tabela do consignado — mesmo layout do deck original (.aptbl) */
+.aptwrap{flex:1;min-height:0;width:62%;margin:0 auto;display:flex;
+flex-direction:column;justify-content:center;overflow:auto}
+.apt-h{font-weight:700;font-size:calc(var(--u)*0.95);color:var(--navy);
+margin-bottom:.35em;line-height:1.2}
+.apt-note{font-size:calc(var(--u)*0.8);color:var(--gray);margin-top:.35em}
+.aptbl{border-collapse:collapse;width:100%;font-size:calc(var(--u)*0.86);
+font-variant-numeric:tabular-nums}
+.aptbl th{background:var(--navy);color:#fff;padding:1px 3px;
+position:sticky;top:0;font-weight:600}
+.aptbl td{padding:1px 4px;text-align:center;border:1px solid #fff}
+.aptbl td.ct{font-weight:700}
 /* capa */
 .cover{background:var(--navy)}
 .cdec{position:absolute;right:3%;top:10%;bottom:10%;width:26%;opacity:.55;
@@ -1213,14 +1232,6 @@ cursor:pointer;opacity:.85;line-height:1}
 font-variant-numeric:tabular-nums;background:rgba(255,255,255,.88);
 border:1px solid #dfe6f0;
 border-radius:6px;padding:calc(var(--u)*0.2) calc(var(--u)*0.5)}
-/* índice de slides (dots) */
-#dots{position:absolute;left:50%;bottom:0.6%;transform:translateX(-50%);
-display:flex;gap:calc(var(--u)*0.55);z-index:50;align-items:center}
-.dot{width:calc(var(--u)*0.75);height:calc(var(--u)*0.75);
-border-radius:50%;border:none;background:#b9c5d6;cursor:pointer;
-padding:0;transition:transform .15s}
-.dot:hover{transform:scale(1.5)}
-.dot.on{background:var(--orange);transform:scale(1.35)}
 /* barra de progresso */
 #pbar{position:absolute;left:0;bottom:0;height:calc(var(--u)*0.35);
 background:var(--orange);width:0;z-index:60;transition:width .25s ease}
@@ -1233,7 +1244,7 @@ background:var(--orange);width:0;z-index:60;transition:width .25s ease}
   aspect-ratio:16/9;page-break-after:always;overflow:hidden;
   animation:none}
  .rev{opacity:1!important;transform:none!important}
- #nav,#dots,#pbar{display:none!important}
+ #nav,#pbar{display:none!important}
 }
 </style>
 </head>
@@ -1245,7 +1256,6 @@ background:var(--orange);width:0;z-index:60;transition:width .25s ease}
  <div id="counter">1 / 1</div>
  <button class="nbtn" id="bnext" onclick="go(1)" title="Próximo (→)">›</button>
 </div>
-<div id="dots"></div>
 <div id="pbar"></div>
 </div>
 <script>
@@ -1254,20 +1264,11 @@ const slides=[...document.querySelectorAll('.slide')];let cur=0;
 const counter=document.getElementById('counter');
 const bp=document.getElementById('bprev'),bn=document.getElementById('bnext');
 const pbar=document.getElementById('pbar');
-const dotsBox=document.getElementById('dots');
-const TITULOS=slides.map(s=>{
- const t=s.querySelector('.ttl,.ctit');
- return t?t.textContent.trim().slice(0,60):'';});
-slides.forEach((s,i)=>{
- const d=document.createElement('button');d.className='dot';
- d.title=(i+1)+' · '+TITULOS[i];d.onclick=()=>show(i);
- dotsBox.appendChild(d);});
 function show(n){cur=Math.max(0,Math.min(slides.length-1,n));
  slides.forEach((s,i)=>s.classList.toggle('active',i===cur));
  counter.textContent=(cur+1)+' / '+slides.length;
  bp.disabled=cur===0;bn.disabled=cur===slides.length-1;
  pbar.style.width=((cur+1)/slides.length*100)+'%';
- [...dotsBox.children].forEach((d,i)=>d.classList.toggle('on',i===cur));
  /* rearma a revelação progressiva ao entrar no slide */
  slides[cur].querySelectorAll('.rev').forEach(r=>r.classList.remove('shown'));}
 function revela(){

@@ -576,11 +576,19 @@ cards = [
     (fmt_n(G["comandos_bash"]), "comandos executados"),
     (fmt_n(G["arquivos_escritos"]), "arquivos criados ou editados"),
     (fmt_bi(G["tokens_total"]), "tokens processados"),
-    (f'US$ {fmt_n(G["custo_api_usd"])}', "custo equivalente em preço de API"),
+    (f'US$ {fmt_n(G["custo_api_usd"])}', "de compute, em preço de API"),
 ]
 cards_html = "".join(
     f'<div class="card"><div class="cn">{e(v)}</div>'
     f'<div class="cl">{e(l)}</div></div>' for v, l in cards)
+# card destacado: custo real = assinatura mensal
+PLANO_USD = 100  # Claude Max 5x
+mult = round(G["custo_api_usd"] / PLANO_USD)
+cards_html += (
+    f'<div class="card cdest" style="grid-column:span 2">'
+    f'<div class="cn">{mult}× <span class="cnsub">o valor da assinatura</span></div>'
+    f'<div class="cl">custo real: 1 mês do plano de US$ {PLANO_USD} — '
+    f'<b>sem chegar perto do limite de uso</b></div></div>')
 slides.append(f'''
 <section class="slide">
  {header("NÚMEROS REAIS", "O que aconteceu nas sessões — medido, não estimado")}
@@ -1014,9 +1022,15 @@ flex-direction:column;justify-content:center;gap:calc(var(--u)*0.5)}
 .cn{font-size:calc(var(--u)*3.1);font-weight:700;color:var(--navy);
 font-variant-numeric:tabular-nums}
 .cl{font-size:calc(var(--u)*1.05);color:var(--gray)}
-.cards.c2{grid-template-columns:repeat(2,1fr);gap:calc(var(--u)*0.9)}
-.cards.c2 .cn{font-size:calc(var(--u)*2.5)}
-.cards.c2 .card{padding:calc(var(--u)*1.0) calc(var(--u)*0.6)}
+.cards.c2{grid-template-columns:repeat(2,1fr);gap:calc(var(--u)*0.7)}
+.cards.c2 .cn{font-size:calc(var(--u)*2.0)}
+.cards.c2 .cl{font-size:calc(var(--u)*0.92)}
+.cards.c2 .card{padding:calc(var(--u)*0.6) calc(var(--u)*0.6);
+gap:calc(var(--u)*0.25)}
+.card.cdest{background:var(--navy);border-color:var(--navy)}
+.card.cdest .cn{color:var(--orange)}
+.card.cdest .cl{color:#cdd9ea}
+.cnsub{font-size:calc(var(--u)*1.15);font-weight:600;color:#fff}
 /* chat */
 .chatcol{display:flex;flex-direction:column;gap:calc(var(--u)*0.7);
 flex:1;min-height:0;overflow:auto;padding-right:calc(var(--u)*0.5)}

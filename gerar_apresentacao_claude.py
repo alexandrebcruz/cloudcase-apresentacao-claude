@@ -462,11 +462,15 @@ def svg_barras_sessoes():
 
 
 def svg_heatmap():
-    """Heatmap dia × hora da atividade real (BRT)."""
+    """Heatmap dia × hora da atividade real (BRT): opacidade do laranja
+    proporcional ao volume (mais transparente = menos atividade)."""
+    from datetime import date as _date
+    SEMANA = ["segunda", "terça", "quarta", "quinta", "sexta",
+              "sábado", "domingo"]
     a = G.get("atividade", {})
     dias = sorted({k.split("|")[0] for k in a})
     mx = max(a.values()) if a else 1
-    CW, CH, L, T = 12.4, 22, 52, 26
+    CW, CH, L, T = 12.4, 24, 74, 26
     W, H = L + 24 * CW + 10, T + len(dias) * CH + 34
     el = []
     for h in range(0, 24, 2):
@@ -475,27 +479,41 @@ def svg_heatmap():
                   f'fill="#5b6675">{h}h</text>')
     for r, d in enumerate(dias):
         y = T + r * CH
-        el.append(f'<text x="{L-6}" y="{y+CH/2+3:.0f}" text-anchor="end" '
+        dsem = SEMANA[_date(int(d[:4]), int(d[5:7]), int(d[8:10])).weekday()]
+        fimsem = dsem in ("sábado", "domingo")
+        cor_sem = "#b07b10" if fimsem else "#8a96a8"
+        el.append(f'<text x="{L-8}" y="{y+CH/2-2:.0f}" text-anchor="end" '
                   f'font-size="9" fill="#14233f" font-weight="700">'
                   f'{d[8:10]}/{MESES.get(d[5:7], d[5:7])}</text>')
+        el.append(f'<text x="{L-8}" y="{y+CH/2+9:.0f}" text-anchor="end" '
+                  f'font-size="7.5" fill="{cor_sem}"'
+                  + (' font-weight="700"' if fimsem else "")
+                  + f'>{dsem}</text>')
         for h in range(24):
             v = a.get(f"{d}|{h}", 0)
-            if v == 0:
-                fill, op = "#eef2f8", 1
-            else:
-                t = (v / mx) ** 0.5
-                # interpola navy → laranja
-                c1, c2 = (20, 35, 63), (244, 167, 34)
-                rgb = tuple(round(c1[j] + (c2[j] - c1[j]) * t)
-                            for j in range(3))
-                fill, op = f"rgb({rgb[0]},{rgb[1]},{rgb[2]})", 1
-            el.append(f'<rect x="{L + h * CW:.1f}" y="{y}" '
-                      f'width="{CW-1.6:.1f}" height="{CH-3}" rx="2.5" '
-                      f'fill="{fill}"><title>{d} {h}h — {v} eventos'
-                      f'</title></rect>')
-    el.append(f'<text x="{W/2:.0f}" y="{H-8}" text-anchor="middle" '
-              f'font-size="9" fill="#5b6675">cada célula = 1 hora · cor = '
-              f'volume de mensagens/ações (máx. {fmt_n(mx)}/h)</text>')
+            x = L + h * CW
+            # fundo da célula (grade)
+            el.append(f'<rect x="{x:.1f}" y="{y}" width="{CW-1.6:.1f}" '
+                      f'height="{CH-4}" rx="2.5" fill="none" '
+                      f'stroke="#e3e9f2" stroke-width="0.8"/>')
+            if v > 0:
+                op = 0.10 + 0.90 * (v / mx) ** 0.5
+                el.append(f'<rect x="{x:.1f}" y="{y}" '
+                          f'width="{CW-1.6:.1f}" height="{CH-4}" rx="2.5" '
+                          f'fill="#f4a722" fill-opacity="{op:.2f}">'
+                          f'<title>{d} ({dsem}) {h}h — {v} eventos'
+                          f'</title></rect>')
+    # legenda de opacidade
+    lx = W / 2 - 80
+    el.append(f'<text x="{lx-6}" y="{H-7}" text-anchor="end" font-size="9" '
+              f'fill="#5b6675">menos atividade</text>')
+    for i in range(8):
+        op = 0.10 + 0.90 * (i / 7)
+        el.append(f'<rect x="{lx + i*15:.0f}" y="{H-16}" width="13" '
+                  f'height="11" rx="2" fill="#f4a722" '
+                  f'fill-opacity="{op:.2f}"/>')
+    el.append(f'<text x="{lx + 8*15 + 6:.0f}" y="{H-7}" font-size="9" '
+              f'fill="#5b6675">mais atividade (máx. {fmt_n(mx)}/h)</text>')
     return (f'<svg viewBox="0 0 {W:.0f} {H:.0f}" '
             f'xmlns="http://www.w3.org/2000/svg">{"".join(el)}</svg>')
 
@@ -582,7 +600,7 @@ slides.append(f'''
  </div>
  <div class="foot">Atividade real (mensagens e ações por hora, horário de Brasília), extraída dos timestamps do histórico</div>
 </section>'''.format(f'<div class="figin">{svg_heatmap()}</div>'
-                     '<div class="figcap">Cada linha é um dia; cada célula, uma hora — navy → laranja = mais atividade</div>'))
+                     '<div class="figcap">Cada linha é um dia; cada célula, uma hora — quanto mais opaco o laranja, maior a atividade</div>'))
 
 # 4 — timeline interativa
 sess_js = []

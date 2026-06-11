@@ -1,4 +1,4 @@
-# CloudCase — Como o Claude construiu o modelo do Consignado
+# ClaudeCase — Como o Claude construiu o modelo do Consignado
 
 Apresentação interativa em HTML (offline, arquivo único) que mostra, com
 trechos verbatim das sessões reais do Claude Code, como o projeto

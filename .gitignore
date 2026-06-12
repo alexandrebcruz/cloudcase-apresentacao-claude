@@ -1,3 +1,4 @@
 .claude/settings.local.json
 __pycache__/
 *.pyc
+assets_v3/audio/*.wav
